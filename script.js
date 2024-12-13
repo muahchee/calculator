@@ -15,7 +15,11 @@ function multiply(a, b){
 
 //divide
 function divide(a, b){
-    return a / b;
+    if (b === 0) {
+        return "HOW DARE YOU!"
+    } else {
+        return a / b;
+    }
 }
 
 let firstNumber;
@@ -82,25 +86,38 @@ const operatorButtons = document.querySelectorAll(".operator");
 
 operatorButtons.forEach((operator) => {
     operator.addEventListener("click", () => {
-        //todo! 
-        //if displayNumber doesnt equal "",
-        //push displayNumber to equationArr
-        //set inputNumber = [] and displayNumber = "" (empty them)
-        //empty display
-        //push operator.id to equationArr
 
+        //check if there is something in displayNumber, if yes then...
         if (displayNumber != undefined){
+            
             equationArr.push(displayNumber);
 
-            //clear display and variables
+            //clear variable
             inputNumber = [];
-            displayNumber = "";
-            display.textContent = "";
 
+            //if equationArr.length is 3, call operate on the three items. store in result
+            //display result
+
+            if (equationArr.length === 3){
+                let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
+
+                equationArr.splice(0, 3, result);
+
+                // check if result is not "HOW DARE YOU" (response to dividing by 0)
+                if (equationArr[0] != "HOW DARE YOU!"){
+
+                //rounds to 5 decimal places, removes .00000
+                display.textContent = equationArr[0].toFixed(5).replace(/\.00000$/, '');
+
+                } else {
+                    display.textContent = equationArr[0];
+                }
+            }
+            
             equationArr.push(operator.id);
             
         }
- 
+
     })
 })
 
@@ -111,7 +128,7 @@ equalsButton.addEventListener("click", () => {
     
     equationArr.push(displayNumber);
 
-    //if equationArr.length === 1, return equationArr[0] in display.textContent
+    //if there's just a number in equationArr, display it
     if (equationArr.length === 1){
 
         display.textContent = equationArr[0];
@@ -122,15 +139,6 @@ equalsButton.addEventListener("click", () => {
         displayNumber = "";
         display.textContent = "";     
 
-        //check for * or /, operate on those first
-        while(equationArr.includes('*') || equationArr.includes('/')) {
-            let index = equationArr.indexOf('*') || equationArr.indexOf('/');
-
-            let result = operate(Number(equationArr[index - 1]), equationArr[index], equationArr[index + 1]);
-
-            equationArr.splice(index-1, 3, result);
-        }
-
         //operate on + and -
         for (let i = 0; i < equationArr.length; i++){
             let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
@@ -140,9 +148,30 @@ equalsButton.addEventListener("click", () => {
 
         }
 
-        display.textContent = equationArr[0];
+        // check if result is not "HOW DARE YOU" (response to dividing by 0)
+        if (equationArr[0] != "HOW DARE YOU!"){
+
+            //rounds to 5 decimal places, removes .00000
+            display.textContent = equationArr[0].toFixed(5).replace(/\.00000$/, '');
+
+        } else {
+            display.textContent = equationArr[0];
+        }
 
     }
 
 })
+
+//-clear button-
+const clearButton = document.querySelector("#clear");
+
+clearButton.addEventListener("click", () => {
+    //clear display and variables
+    inputNumber = [];
+    displayNumber = "";
+    display.textContent = "";  
+    equationArr = []; 
+})
+
+//-delete button-
 
