@@ -191,4 +191,11 @@ clearButton.addEventListener("click", () => {
 })
 
 //-delete button-
+const deleteButton = document.querySelector("#delete");
 
+deleteButton.addEventListener("click", () => {
+    inputNumber.splice(inputNumber.length - 1, 1);
+    displayNumber = displayNumber.slice(0, displayNumber.length - 1);
+
+    display.textContent = displayNumber;
+})
