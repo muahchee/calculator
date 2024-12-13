@@ -32,18 +32,26 @@ function operate (firstNumber, operator, secondNumber){
     switch (operator) {
         case '+':
             result = add(firstNumber, secondNumber);
+            firstNumber = "";
+            secondNumber = "";
             break;
         
         case '-':
             result = subtract(firstNumber, secondNumber);
+            firstNumber = "";
+            secondNumber = "";
             break;
 
         case '*':
             result = multiply(firstNumber, secondNumber);
+            firstNumber = "";
+            secondNumber = "";
             break;
 
         case '/':
             result = divide(firstNumber, secondNumber);
+            firstNumber = "";
+            secondNumber = "";
             break;
     }
     return result;
@@ -80,47 +88,49 @@ digitButtons.forEach((digit) => {
     })
 });
 
-
 //-operator buttons-
 const operatorButtons = document.querySelectorAll(".operator");
 
 operatorButtons.forEach((operator) => {
     operator.addEventListener("click", () => {
+        
+        //check if there is something in displayNumber, if yes then...
+        if (displayNumber != undefined){
+            
+            //add displayNumber to array
+            equationArr.push(displayNumber);
 
-        //ignore consecutive operator input, checks if last item is operator 
-        if (equationArr[equationArr.length - 1] != '+' && equationArr[equationArr.length - 1] != '-' && equationArr[equationArr.length - 1] != '*' && equationArr[equationArr.length - 1] != '/'){
+            //clear variable
+            inputNumber = [];
 
-            //check if there is something in displayNumber, if yes then...
-            if (displayNumber != undefined){
+            console.log(equationArr)
+
+            //operate on first three items when second operator is pressed
+            if (equationArr.length === 3){
+
+                let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
+
+                equationArr.splice(0, 3, result);
+
                 
-                equationArr.push(displayNumber);
+                // check if result is not "HOW DARE YOU" (response to dividing by 0)
+                if (equationArr[0] != "HOW DARE YOU!"){
 
-                //clear variable
-                inputNumber = [];
+                //rounds to 5 decimal places, removes .00000
+                display.textContent = equationArr[0].toFixed(5).replace(/\.00000$/, '');
 
-                //operate on first three items when second operator is pressed
-                if (equationArr.length === 3){
-                    let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
-
-                    equationArr.splice(0, 3, result);
-
-                    // check if result is not "HOW DARE YOU" (response to dividing by 0)
-                    if (equationArr[0] != "HOW DARE YOU!"){
-
-                    //rounds to 5 decimal places, removes .00000
-                    display.textContent = equationArr[0].toFixed(5).replace(/\.00000$/, '');
-
-                    } else {
-                        display.textContent = equationArr[0];
-                    }
+                } else {
+                    display.textContent = equationArr[0];
+                    console.log(equationArr);
                 }
+            }
 
                 equationArr.push(operator.id);
-
                 
-            }
-        }
+                displayNumber = "";
+        } 
 
+        
     })
 })
 
@@ -128,40 +138,46 @@ operatorButtons.forEach((operator) => {
 const equalsButton = document.querySelector(".equals");
 
 equalsButton.addEventListener("click", () => {
-    
+
     equationArr.push(displayNumber);
 
-    //if there's just a number in equationArr, display it
-    if (equationArr.length === 1){
+    if (equationArr.length === 0){
+        //displays if equals is pressed first
+        display.textContent = "stop it";
 
-        display.textContent = equationArr[0];
+    } else{
+        //if there's just a number in equationArr, display it
+        if (equationArr.length === 1 || equationArr.length === 2){
 
-    } else {
-        //clear display and variables
-        inputNumber = [];
-        displayNumber = "";
-        display.textContent = "";     
-
-        //operate on + and -
-        for (let i = 0; i < equationArr.length; i++){
-            let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
-
-            //remove first three items and replace with result
-            equationArr.splice(0, 3, result);
-
-        }
-
-        // check if result is not "HOW DARE YOU" (response to dividing by 0)
-        if (equationArr[0] != "HOW DARE YOU!"){
-
-            //rounds to 5 decimal places, removes .00000
-            display.textContent = equationArr[0].toFixed(5).replace(/\.00000$/, '');
+            display.textContent = equationArr[0];
 
         } else {
-            display.textContent = equationArr[0];
-        }
+            //clear display and variables
+            inputNumber = [];
+            displayNumber = "";
+            display.textContent = "";     
 
+            for (let i = 0; i < equationArr.length; i++){
+                let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
+
+                //remove first three items and replace with result
+                equationArr.splice(0, 3, result);
+
+            }
+
+            // check if result is not "HOW DARE YOU" (response to dividing by 0)
+            if (equationArr[0] != "HOW DARE YOU!"){
+
+                //rounds to 5 decimal places, removes .00000
+                display.textContent = equationArr[0].toFixed(5).replace(/\.00000$/, '');
+
+            } else {
+                display.textContent = equationArr[0];
+            }
+
+        }
     }
+    
 
 })
 
@@ -169,7 +185,7 @@ equalsButton.addEventListener("click", () => {
 const clearButton = document.querySelector("#clear");
 
 clearButton.addEventListener("click", () => {
-    //clear display and variables
+    //reset display and variables
     inputNumber = [];
     displayNumber = "";
     display.textContent = "";  
