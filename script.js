@@ -87,35 +87,38 @@ const operatorButtons = document.querySelectorAll(".operator");
 operatorButtons.forEach((operator) => {
     operator.addEventListener("click", () => {
 
-        //check if there is something in displayNumber, if yes then...
-        if (displayNumber != undefined){
-            
-            equationArr.push(displayNumber);
+        //ignore consecutive operator input, checks if last item is operator 
+        if (equationArr[equationArr.length - 1] != '+' && equationArr[equationArr.length - 1] != '-' && equationArr[equationArr.length - 1] != '*' && equationArr[equationArr.length - 1] != '/'){
 
-            //clear variable
-            inputNumber = [];
+            //check if there is something in displayNumber, if yes then...
+            if (displayNumber != undefined){
+                
+                equationArr.push(displayNumber);
 
-            //if equationArr.length is 3, call operate on the three items. store in result
-            //display result
+                //clear variable
+                inputNumber = [];
 
-            if (equationArr.length === 3){
-                let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
+                //operate on first three items when second operator is pressed
+                if (equationArr.length === 3){
+                    let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
 
-                equationArr.splice(0, 3, result);
+                    equationArr.splice(0, 3, result);
 
-                // check if result is not "HOW DARE YOU" (response to dividing by 0)
-                if (equationArr[0] != "HOW DARE YOU!"){
+                    // check if result is not "HOW DARE YOU" (response to dividing by 0)
+                    if (equationArr[0] != "HOW DARE YOU!"){
 
-                //rounds to 5 decimal places, removes .00000
-                display.textContent = equationArr[0].toFixed(5).replace(/\.00000$/, '');
+                    //rounds to 5 decimal places, removes .00000
+                    display.textContent = equationArr[0].toFixed(5).replace(/\.00000$/, '');
 
-                } else {
-                    display.textContent = equationArr[0];
+                    } else {
+                        display.textContent = equationArr[0];
+                    }
                 }
+
+                equationArr.push(operator.id);
+
+                
             }
-            
-            equationArr.push(operator.id);
-            
         }
 
     })
