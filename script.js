@@ -67,7 +67,7 @@ digitButtons.forEach((digit) => {
         if (equationArr.length === 1){
             equationArr = [];
         }
-        
+
         //push digit.id to inputNumber array
         //mash inputNumber into string and put in displayNumber
         inputNumber.push(digit.id);
@@ -117,12 +117,21 @@ equalsButton.addEventListener("click", () => {
         display.textContent = equationArr[0];
 
     } else {
-
         //clear display and variables
         inputNumber = [];
         displayNumber = "";
         display.textContent = "";     
-        
+
+        //check for * or /, operate on those first
+        while(equationArr.includes('*') || equationArr.includes('/')) {
+            let index = equationArr.indexOf('*') || equationArr.indexOf('/');
+
+            let result = operate(Number(equationArr[index - 1]), equationArr[index], equationArr[index + 1]);
+
+            equationArr.splice(index-1, 3, result);
+        }
+
+        //operate on + and -
         for (let i = 0; i < equationArr.length; i++){
             let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
 
@@ -135,17 +144,5 @@ equalsButton.addEventListener("click", () => {
 
     }
 
-    //else if equationArr.length % 3 === 0,
-
-    //push displayNumber to equationArr
-    //clear display and variables
-
-    //loop (i = 0, i <= equationArr.length,)
-    //call operate on first three indexes, turn first and third index into numbers (firstNumber and secondNumber) and store result in 'result'
-    //remove first three items from equationArr
-    //use unshift to put result at equationArr[0]
-
-    //after loop (there should be one item in equationArr),
-    //display.textContent = equationArr[0];
 })
 
