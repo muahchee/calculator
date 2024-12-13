@@ -32,26 +32,18 @@ function operate (firstNumber, operator, secondNumber){
     switch (operator) {
         case '+':
             result = add(firstNumber, secondNumber);
-            firstNumber = "";
-            secondNumber = "";
             break;
         
         case '-':
             result = subtract(firstNumber, secondNumber);
-            firstNumber = "";
-            secondNumber = "";
             break;
 
         case '*':
             result = multiply(firstNumber, secondNumber);
-            firstNumber = "";
-            secondNumber = "";
             break;
 
         case '/':
             result = divide(firstNumber, secondNumber);
-            firstNumber = "";
-            secondNumber = "";
             break;
     }
     return result;
@@ -127,7 +119,8 @@ operatorButtons.forEach((operator) => {
 
                 equationArr.push(operator.id);
                 
-                displayNumber = "";
+                //to ignore consecutive operator inputs, without this, display number is reused when operate is invoked
+                displayNumber = undefined;
         } 
 
         
@@ -147,15 +140,20 @@ equalsButton.addEventListener("click", () => {
 
     } else{
         //if there's just a number in equationArr, display it
+        //if there's an operator at the end, ignore it
         if (equationArr.length === 1 || equationArr.length === 2){
 
             display.textContent = equationArr[0];
 
+            equationArr.splice(equationArr.length - 1, 1);
+
+            console.log(equationArr)
+
         } else {
             //clear display and variables
             inputNumber = [];
-            displayNumber = "";
-            display.textContent = "";     
+            displayNumber = undefined;
+            display.textContent = undefined;     
 
             for (let i = 0; i < equationArr.length; i++){
                 let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
@@ -187,8 +185,8 @@ const clearButton = document.querySelector("#clear");
 clearButton.addEventListener("click", () => {
     //reset display and variables
     inputNumber = [];
-    displayNumber = "";
-    display.textContent = "";  
+    displayNumber = undefined;
+    display.textContent = undefined;  
     equationArr = []; 
 })
 
