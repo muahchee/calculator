@@ -80,6 +80,22 @@ digitButtons.forEach((digit) => {
     })
 });
 
+let decimalPressed = false;
+
+const decimalButton = document.querySelector(".decimal");
+
+decimalButton.addEventListener("click", () => {
+    //if decimal button hasn't been pressed and it's not the beginning of inputed number
+    if (decimalPressed === false && inputNumber.length > 0){
+        decimalPressed = true;
+
+        //push digit.id to inputNumber array
+        //mash inputNumber into string and put in displayNumber
+        inputNumber.push(decimalButton.id);
+        displayNumber = inputNumber.join("");
+        display.textContent = displayNumber;
+    }
+})
 
 //-operator buttons-
 const operatorButtons = document.querySelectorAll(".operator");
@@ -95,6 +111,7 @@ operatorButtons.forEach((operator) => {
 
             //clear variable
             inputNumber = [];
+            decimalPressed = false;
 
             console.log(equationArr)
 
@@ -155,7 +172,8 @@ equalsButton.addEventListener("click", () => {
             //clear display and variables
             inputNumber = [];
             displayNumber = undefined;
-            display.textContent = undefined;     
+            display.textContent = undefined;   
+            decimalPressed = false;  
 
             for (let i = 0; i < equationArr.length; i++){
                 let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
@@ -190,6 +208,7 @@ clearButton.addEventListener("click", () => {
     displayNumber = undefined;
     display.textContent = undefined;  
     equationArr = []; 
+    decimalPressed = false;  
 })
 
 //-delete button-
@@ -211,16 +230,29 @@ window.addEventListener("keydown", (e) => {
     //clears previous completed operations
     if (equationArr.length === 1){
         equationArr = [];
+        decimalPressed = false;  
     }
 
     //checks if key pressed is 0-9 or . (digits)
-    if (/[0-9..]/.test(e.key)){
+    if (/[0-9]/.test(e.key)){
         //push digit.id to inputNumber array
         //mash inputNumber into string and put in displayNumber
         inputNumber.push(e.key);
         displayNumber = inputNumber.join("");
         display.textContent = displayNumber;  
     }  
+
+    if (/[..]/.test(e.key)){
+        if (decimalPressed === false && inputNumber.length > 0){
+            decimalPressed = true;
+    
+            //push digit.id to inputNumber array
+            //mash inputNumber into string and put in displayNumber
+            inputNumber.push(e.key);
+            displayNumber = inputNumber.join("");
+            display.textContent = displayNumber;
+        }
+    }
 
     //checks if key pressed is /*--+ (operator)
     if(/[//**--++]/.test(e.key)){
@@ -233,6 +265,7 @@ window.addEventListener("keydown", (e) => {
 
             //clear variable
             inputNumber = [];
+            decimalPressed = false;  
 
             console.log(equationArr)
 
@@ -286,6 +319,7 @@ window.addEventListener("keydown", (e) => {
                 inputNumber = [];
                 displayNumber = undefined;
                 display.textContent = undefined;     
+                decimalPressed = false;  
     
                 for (let i = 0; i < equationArr.length; i++){
                     let result = operate(Number(equationArr[0]), equationArr[1], Number(equationArr[2]));
